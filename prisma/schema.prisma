@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String?
+  avatar    String?
+  role      UserRole @default(USER)
+  status    Status   @default(ACTIVE)
+
+  // Relations
+  student   Student?
+  teacher   Teacher?
+  admin     Admin?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DELETED
+}
+
+// Student model
+model Student {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollmentDate  DateTime @default(now())
+  studentNumber   String   @unique
+  dateOfBirth     DateTime?
+  gender          String?
+  address         String?
+  parentEmail     String?
+  parentPhone     String?
+  guardianName    String?
+  guardianPhone   String?
+
+  // Relations
+  classId         String?
+  class           Class?   @relation(fields: [classId], references: [id])
+  grades          Grade[]
+  attendance      Attendance[]
+  courses         StudentCourse[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Teacher model
+model Teacher {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeNumber  String   @unique
+  department      String?
+  qualification   String?
+  dateOfBirth     DateTime?
+  joinDate        DateTime @default(now())
+  specialization  String?
+
+  // Relations
+  classes         Class[]
+  courses         Course[]
+  schedule        Schedule[]
+  assignments     Assignment[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Admin model
+model Admin {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions     String[] @default([])
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Class model
+model Class {
+  id              String   @id @default(cuid())
+  name            String
+  classCode       String   @unique
+  section         String?
+  capacity        Int      @default(40)
+  academicYear    String
+
+  // Relations
+  teacherId       String?
+  teacher         Teacher? @relation(fields: [teacherId], references: [id])
+  students        Student[]
+  courses         Course[]
+  schedule        Schedule[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Course model
+model Course {
+  id              String   @id @default(cuid())
+  name            String
+  courseCode      String   @unique
+  description     String?
+  credits         Int      @default(3)
+  semester        Int
+
+  // Relations
+  teacherId       String?
+  teacher         Teacher? @relation(fields: [teacherId], references: [id])
+  classId         String?
+  class           Class?   @relation(fields: [classId], references: [id])
+  students        StudentCourse[]
+  assignments     Assignment[]
+  grades          Grade[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Student Course Junction
+model StudentCourse {
+  id              String   @id @default(cuid())
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId        String
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollmentDate  DateTime @default(now())
+  status          String   @default("ACTIVE")
+
+  @@unique([studentId, courseId])
+}
+
+// Grade model
+model Grade {
+  id              String   @id @default(cuid())
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId        String
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  marks           Float
+  percentage      Float?
+  gradePoint      String?
+  feedback        String?
+  recordedAt      DateTime @default(now())
+
+  @@unique([studentId, courseId])
+}
+
+// Attendance model
+model Attendance {
+  id              String   @id @default(cuid())
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classId         String?
+  date            DateTime
+  status          AttendanceStatus @default(PRESENT)
+  remarks         String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([studentId, date])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+// Schedule model
+model Schedule {
+  id              String   @id @default(cuid())
+  classId         String
+  class           Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacherId       String
+  teacher         Teacher  @relation(fields: [teacherId], references: [id])
+  dayOfWeek       Int      // 0-6 (Monday-Sunday)
+  startTime       DateTime
+  endTime         DateTime
+  room            String?
+  subject         String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Assignment model
+model Assignment {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  courseId        String
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  teacherId       String
+  teacher         Teacher  @relation(fields: [teacherId], references: [id])
+  dueDate         DateTime
+  totalMarks      Int      @default(100)
+  submissions     Submission[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Submission model
+model Submission {
+  id              String   @id @default(cuid())
+  assignmentId    String
+  assignment      Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId       String
+  fileUrl         String
+  submittedAt     DateTime @default(now())
+  marks           Int?
+  feedback        String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([assignmentId, studentId])
+}

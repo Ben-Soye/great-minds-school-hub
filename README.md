@@ -1,351 +1,183 @@
-# 🏫 Great Minds School Hub
+# Great Minds School Hub
 
-A comprehensive, full-stack school management system connecting administrators, teachers, students, and parents with role-based dashboards, real-time communication, and advanced analytics.
+A comprehensive school management system built with modern technologies for educational institutions to manage students, teachers, classes, and administrative tasks.
 
-## 📋 Overview
+## Features
 
-**Great Minds School Hub** is a production-ready, scalable school management platform featuring:
+- 👥 **Student Management** - Enrollment, attendance, grades, and performance tracking
+- 👨‍🏫 **Teacher Management** - Class assignments, schedules, and performance metrics
+- 📚 **Class Management** - Scheduling, capacity management, and resource allocation
+- 📊 **Analytics & Reports** - Comprehensive dashboards and exportable reports
+- 🔐 **Secure Authentication** - Role-based access control with JWT
+- 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
+- 🚀 **Real-time Updates** - WebSocket support for live notifications
+- 🔄 **Background Jobs** - Queue-based processing with Redis
 
-- ✅ **Role-Based Access Control:** Super Owner, Admin, Session Heads, Teachers, Parents, Students
-- ✅ **Multi-Section Support:** Nursery, Primary/Basic, Secondary with independent permission management
-- ✅ **Attendance Tracking:** Real-time marking and comprehensive reporting
-- ✅ **Gradebook & Assessments:** Assignment creation, grading, and transcript generation
-- ✅ **Real-Time Communication:** In-app messaging and announcements
-- ✅ **Advanced Analytics:** Performance dashboards and predictive insights
-- ✅ **Secure File Storage:** AWS S3 integration with virus scanning
-- ✅ **Mobile-First Design:** Fully responsive web app with PWA support (Phase 2)
-- ✅ **Enterprise Compliance:** FERPA/GDPR compliant with audit logging
+## Tech Stack
 
----
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **React Query** - Data fetching and caching
+- **React Router** - Client-side routing
+- **Zod** - Schema validation
 
-## 🚀 Quick Start
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **TypeScript** - Type safety
+- **Prisma** - ORM and database toolkit
+- **PostgreSQL** - Primary database
+- **Redis** - Caching and job queue
+- **Bull** - Job scheduling
+- **JWT** - Authentication
 
-### Prerequisites
+## Prerequisites
 
-- **Node.js** 18+
-- **npm** or **yarn**
-- **PostgreSQL** 15+
-- **Redis** (for caching and sessions)
-- **Docker** & **Docker Compose** (optional)
+- Docker & Docker Compose
+- Node.js 20+ (for local development)
+- npm or yarn
 
-### Local Development Setup
+## Quick Start
 
-#### 1. Clone the Repository
+### Using Docker Compose (Recommended)
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Ben-Soye/great-minds-school-hub.git
+   cd great-minds-school-hub
+   ```
+
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Start all services**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Run database migrations**
+   ```bash
+   docker-compose exec backend npm run db:migrate
+   ```
+
+5. **Seed the database (optional)**
+   ```bash
+   docker-compose exec backend npm run db:seed
+   ```
+
+6. **Access the application**
+   - Frontend: http://localhost
+   - Backend API: http://localhost:5000
+   - API Documentation: http://localhost:5000/api/docs
+
+### Local Development
+
+#### Backend Setup
 ```bash
-git clone https://github.com/Ben-Soye/great-minds-school-hub.git
-cd great-minds-school-hub
-```
-
-#### 2. Install Dependencies
-
-```bash
-# Backend
 cd backend
 npm install
-
-# Frontend
-cd ../frontend
-npm install
-```
-
-#### 3. Environment Configuration
-
-Copy `.env.example` to `.env` in both directories and configure:
-
-```bash
-# Backend .env
-cp backend/.env.example backend/.env
-
-# Frontend .env
-cp frontend/.env.example frontend/.env
-```
-
-#### 4. Database Setup
-
-```bash
-cd backend
-
-# Run migrations
-npm run db:migrate
-
-# Seed sample data
-npm run db:seed
-```
-
-#### 5. Start Development Servers
-
-```bash
-# Terminal 1: Backend (runs on http://localhost:5000)
-cd backend
+npm run db:push
 npm run dev
+```
 
-# Terminal 2: Frontend (runs on http://localhost:3000)
+#### Frontend Setup
+```bash
 cd frontend
+npm install
 npm run dev
 ```
 
-Access the app at: **http://localhost:3000**
-
----
-
-## 🐳 Docker Setup
-
-```bash
-# Start all services with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 great-minds-school-hub/
-├── backend/                  # Node.js + Express API
+├── backend/
 │   ├── src/
-│   │   ├── config/          # Configuration files
-│   │   ├── middleware/      # Auth, RBAC, logging
-│   │   ├── routes/          # API endpoints
-│   │   ├── controllers/     # Request handlers
-│   │   ├── services/        # Business logic
-│   │   ├── models/          # Database schemas (Prisma)
-│   │   ├── utils/           # Helper functions
-│   │   ├── types/           # TypeScript types
-│   │   └── app.ts           # Express app setup
-│   ├── prisma/              # Prisma migrations & schema
-│   ├── tests/               # Jest test suites
-│   ├── .env.example
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── Dockerfile
-│
-├── frontend/                 # React + TypeScript + Tailwind
-│   ├── src/
-│   │   ├── components/      # Reusable React components
-│   │   ├── pages/           # Page components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── services/        # API client functions
-│   │   ├── store/           # State management (Zustand)
-│   │   ├── types/           # TypeScript types
-│   │   ├── utils/           # Helper functions
-│   │   ├── App.tsx          # Main app component
-│   │   └── main.tsx         # Entry point
-│   ├── public/              # Static assets
-│   ├── .env.example
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
+│   │   ├── index.ts
+│   │   ├── config/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── prisma/
+│   │   └── schema.prisma
 │   ├── Dockerfile
-│   └── nginx.conf
-│
-├── docker-compose.yml       # Multi-container setup
-├── .github/
-│   └── workflows/           # CI/CD pipelines
-├── REFINED_PROMPT.md        # Full project specification
-├── ROLES_AND_PERMISSIONS.md # Detailed role documentation
-├── SESSION_HEADS_INTEGRATION.md # Session Head layer specification
-├── ARCHITECTURE.md          # System design documentation
-├── API_DOCUMENTATION.md     # API endpoint reference
-├── DEPLOYMENT_GUIDE.md      # Deployment instructions
-├── CONTRIBUTING.md          # Contribution guidelines
-├── LICENSE                  # MIT License
-└── README.md                # This file
+│   ├── package.json
+│   └── tsconfig.json
+├── frontend/
+│   ├── src/
+│   │   ├── main.tsx
+│   │   ├── App.tsx
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── vite.config.ts
+├── docker-compose.yml
+└── README.md
 ```
 
----
+## API Documentation
 
-## 🔐 User Roles & Access Levels
+API documentation is available at `/api/docs` when the backend is running.
 
-| Role | Level | Key Capabilities |
-|------|-------|------------------|
-| **Super Owner** | ⭐⭐⭐⭐⭐ | Complete system control, multi-school management, user provisioning |
-| **Admin** | ⭐⭐⭐⭐ | School-level management, class/subject setup, reporting |
-| **Session Head** | ⭐⭐⭐ | Section management (Nursery/Primary/Secondary) with configurable permissions |
-| **Teacher** | ⭐⭐⭐ | Class management, attendance, grading, assignments |
-| **Student** | ⭐⭐ | View grades, assignments, attendance; submit work |
-| **Parent** | ⭐ | Monitor child's progress, communicate with teachers |
+## Environment Variables
 
-**See [ROLES_AND_PERMISSIONS.md](./ROLES_AND_PERMISSIONS.md) for detailed role specifications.**
+See `.env.example` for a complete list of environment variables.
 
----
-
-## 🏗️ Technical Stack
+## Development Scripts
 
 ### Backend
-- **Runtime:** Node.js 18+
-- **Framework:** Express.js with TypeScript
-- **Database:** PostgreSQL 15+ with Prisma ORM
-- **Authentication:** JWT (access + refresh tokens) with bcrypt hashing
-- **Caching:** Redis for sessions and data caching
-- **File Storage:** AWS S3 with presigned URLs
-- **Email:** Nodemailer/SendGrid integration
-- **Task Queue:** Bull for async jobs
-- **Logging:** Winston (structured JSON logs)
-- **Validation:** Zod for input validation
-- **Testing:** Jest + Supertest
+```bash
+npm run dev           # Start development server
+npm run build         # Build for production
+npm run test          # Run tests
+npm run lint          # Run linter
+npm run db:migrate    # Run database migrations
+npm run db:seed       # Seed database with sample data
+```
 
 ### Frontend
-- **Framework:** React 18+ with TypeScript
-- **Styling:** Tailwind CSS with Headless UI
-- **State Management:** Zustand + Context API
-- **Data Fetching:** TanStack Query (React Query)
-- **Routing:** React Router v6+
-- **Forms:** React Hook Form + Zod
-- **Charts:** Recharts for analytics
-- **HTTP Client:** Axios
-- **Testing:** Vitest + React Testing Library
-- **Build Tool:** Vite
-
-### Infrastructure
-- **Containerization:** Docker + Docker Compose
-- **Orchestration:** Kubernetes-ready (EKS/GKE)
-- **Cloud:** AWS, Azure, or Google Cloud
-- **CI/CD:** GitHub Actions
-- **Monitoring:** Datadog/New Relic for APM
-- **CDN:** CloudFront/Cloudflare
-
----
-
-## 📚 Key Features
-
-### Phase 1 (MVP)
-- [x] Authentication & RBAC
-- [x] Role-based dashboards
-- [x] User management (CRUD)
-- [x] Class & subject management
-- [x] Attendance marking & reporting
-- [x] Grade entry & viewing
-- [x] Announcements
-
-### Phase 2
-- [ ] Assignments & submissions
-- [ ] In-app messaging
-- [ ] Email notifications
-- [ ] Advanced reporting (PDF/CSV)
-- [ ] Attendance analytics
-
-### Phase 3
-- [ ] Predictive analytics
-- [ ] PWA & offline capabilities
-- [ ] Mobile native apps
-- [ ] Payment gateway integration
-- [ ] LMS integrations
-
----
-
-## 🔒 Security Features
-
-✅ **Data Encryption:** TLS 1.2+ in transit; AES-256 at rest
-✅ **Password Security:** Bcrypt hashing (salt rounds 12+)
-✅ **Session Management:** Secure, HttpOnly, SameSite cookies
-✅ **API Security:** Rate limiting, CORS whitelist, CSRF tokens
-✅ **Audit Trail:** Complete logging of all user actions
-✅ **Compliance:** FERPA, GDPR, local education data protection laws
-✅ **File Security:** Virus scanning, sandboxed storage, file type validation
-
----
-
-## 📖 Documentation
-
-- **[REFINED_PROMPT.md](./REFINED_PROMPT.md)** – Complete project specification
-- **[ROLES_AND_PERMISSIONS.md](./ROLES_AND_PERMISSIONS.md)** – Detailed role definitions
-- **[SESSION_HEADS_INTEGRATION.md](./SESSION_HEADS_INTEGRATION.md)** – Session Head layer (additive)
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** – System design & diagrams
-- **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)** – OpenAPI/Swagger reference
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** – Production deployment
-- **[CONTRIBUTING.md](./CONTRIBUTING.md)** – Contribution guidelines
-
----
-
-## 🧪 Testing
-
 ```bash
-# Backend unit tests
-cd backend
-npm run test
-
-# Backend integration tests
-npm run test:integration
-
-# Backend coverage
-npm run test:coverage
-
-# Frontend tests
-cd frontend
-npm run test
-
-# E2E tests (Playwright)
-npm run test:e2e
+npm run dev           # Start development server
+npm run build         # Build for production
+npm run test          # Run tests
+npm run lint          # Run linter
 ```
 
----
+## Contributing
 
-## 📊 Performance & Scalability
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Push to the branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
 
-- **API Response Time:** < 200ms (p95)
-- **Page Load Time:** < 2s
-- **Uptime SLA:** 99.5%
-- **Concurrent Users:** 500+ (horizontally scalable)
-- **Database Optimization:** Indexed queries, connection pooling
-- **Caching Strategy:** Redis for sessions, API responses
+## License
 
----
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🚀 Deployment
+## Support
 
-### Development
-```bash
-dc up -d
-```
+For support, email support@schoolhub.example.com or create an issue in the repository.
 
-### Staging
-```bash
-docker-compose -f docker-compose.staging.yml up -d
-```
+## Roadmap
 
-### Production
-```bash
-# See DEPLOYMENT_GUIDE.md for detailed instructions
-```
+- [ ] Mobile app (React Native)
+- [ ] Video conferencing integration
+- [ ] Advanced analytics and AI-powered insights
+- [ ] Parent portal
+- [ ] Automated grading system
+- [ ] Integration with payment gateways
 
 ---
 
-## 📝 License
-
-MIT License – See [LICENSE](./LICENSE) for details.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
----
-
-## 💬 Support
-
-For issues, feature requests, or questions:
-- **GitHub Issues:** [Create an issue](https://github.com/Ben-Soye/great-minds-school-hub/issues)
-- **Documentation:** Check the docs folder
-- **Email:** support@greatmindsschoolhub.com (future)
-
----
-
-## 🎯 Roadmap
-
-- **Q4 2024:** MVP Release (Authentication, Dashboards, Attendance, Grades)
-- **Q1 2025:** Phase 2 (Assignments, Messaging, Notifications)
-- **Q2 2025:** Phase 3 (Analytics, PWA, Mobile Apps)
-- **Q3 2025:** Enterprise Features (Payment, Integrations, Advanced Reports)
-
----
-
-**Built with ❤️ for educators and learners worldwide.**
+**Made with ❤️ by Ben-Soye**
